@@ -11,6 +11,7 @@ import OwnerApprovalPage from "./pages/OwnerApprovalPage";
 import ProfilePage from "./pages/ProfilePage";
 import ProjectsPage from "./pages/ProjectsPage";
 import React, { useEffect, useState } from "react";
+import ThemeToggle from "./components/ThemeToggle";
 import { BrowserRouter as Router, Routes, Route, Navigate, Link, useNavigate } from "react-router-dom";
 import { getMe } from "./api/authApi";
 import "./App.css";
@@ -27,6 +28,15 @@ import SignupPage from "./pages/SignupPage";
 
 function App() {
   const [me, setMe] = useState(null);
+    const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
+
+    // Apply theme class to root
+    useEffect(() => {
+      const cls = theme === 'dark' ? 'theme-dark' : 'theme-light';
+      document.documentElement.classList.remove('theme-dark','theme-light');
+      document.documentElement.classList.add(cls);
+      localStorage.setItem('theme', theme);
+    }, [theme]);
 
   // try to restore session
   useEffect(() => {
@@ -71,17 +81,22 @@ function App() {
     // Unauthenticated: show only public routes
     return (
       <Router>
-        <Routes>
-          <Route path="/admin" element={
-            <PrivateAdminRoute>
-              <AdminPage />
-            </PrivateAdminRoute>
-          } />
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage onAuthed={handleAuthed} />} />
-          <Route path="/signup" element={<SignupPage onAuthed={handleAuthed} />} />
-          <Route path="/admin-login" element={<AdminLoginPage />} />
-        </Routes>
+        <div>
+          <div style={{ position: 'absolute', top: 10, right: 10 }}>
+            <ThemeToggle theme={theme} setTheme={setTheme} />
+          </div>
+          <Routes>
+            <Route path="/admin" element={
+              <PrivateAdminRoute>
+                <AdminPage />
+              </PrivateAdminRoute>
+            } />
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<LoginPage onAuthed={handleAuthed} />} />
+            <Route path="/signup" element={<SignupPage onAuthed={handleAuthed} />} />
+            <Route path="/admin-login" element={<AdminLoginPage />} />
+          </Routes>
+        </div>
       </Router>
     );
   }
@@ -91,10 +106,15 @@ function App() {
     // Only show admin dashboard for /admin route
     return (
       <Router>
-        <Routes>
-          <Route path="/admin" element={<AdminPage />} />
-          <Route path="*" element={<Navigate to="/admin" />} />
-        </Routes>
+        <div>
+          <div style={{ position: 'absolute', top: 10, right: 10 }}>
+            <ThemeToggle theme={theme} setTheme={setTheme} />
+          </div>
+          <Routes>
+            <Route path="/admin" element={<AdminPage />} />
+            <Route path="*" element={<Navigate to="/admin" />} />
+          </Routes>
+        </div>
       </Router>
     );
   }
@@ -103,6 +123,9 @@ function App() {
   return (
     <Router>
       <div className="app-container">
+          <div style={{ position: 'absolute', top: 10, right: 10 }}>
+            <ThemeToggle theme={theme} setTheme={setTheme} />
+          </div>
         <p>
           Logged in as: {me.name} ({me.email}){" "}
           <span style={{ marginLeft: 10, fontWeight: "bold" }}>Role: {me.role || "user"}</span>

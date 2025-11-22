@@ -6,8 +6,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(120deg, #e0eafc 0%, #cfdef3 100%);
+  background: var(--color-gradient);
   overflow: hidden;
+  transition: background var(--transition-fast);
 }
 
 .animated-bg {
@@ -47,13 +48,14 @@
 .home-content {
   position: relative;
   z-index: 2;
-  background: rgba(255,255,255,0.95);
+  background: var(--color-surface);
   border-radius: 24px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+  box-shadow: var(--color-shadow);
   padding: 48px 32px;
   max-width: 900px;
   width: 100%;
   text-align: center;
+  transition: background var(--transition-fast), box-shadow var(--transition-fast);
 }
 .home-img {
   width: 120px;
@@ -71,14 +73,16 @@
 .home-title {
   font-size: 2.8rem;
   font-weight: 700;
-  color: #2d3a4a;
+  color: var(--color-text);
   margin-bottom: 12px;
   letter-spacing: 1px;
+  transition: color var(--transition-fast);
 }
 .home-desc {
   font-size: 1.2rem;
-  color: #4a5a6a;
+  color: var(--color-text-muted);
   margin-bottom: 32px;
+  transition: color var(--transition-fast);
 }
 .home-features {
   display: flex;
@@ -88,12 +92,12 @@
   flex-wrap: wrap;
 }
 .feature-card {
-  background: #f7fafd;
+  background: var(--color-bg-alt);
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   padding: 24px 16px;
   width: 220px;
-  transition: transform 0.3s;
+  transition: transform 0.3s, background var(--transition-fast);
   text-align: center;
   animation: fadeIn 1.5s;
 }
@@ -109,19 +113,19 @@
 }
 .feature-card h3 {
   font-size: 1.1rem;
-  color: #2d3a4a;
+  color: var(--color-text);
   margin-bottom: 8px;
 }
 .feature-card p {
   font-size: 0.98rem;
-  color: #4a5a6a;
+  color: var(--color-text-muted);
 }
 .home-actions {
   margin-top: 24px;
 }
 .home-btn {
-  background: linear-gradient(90deg, #a1c4fd 0%, #c2e9fb 100%);
-  color: #2d3a4a;
+  background: var(--color-accent);
+  color: #fff;
   border: none;
   border-radius: 8px;
   padding: 14px 36px;
@@ -133,6 +137,6 @@
   transition: background 0.3s, transform 0.2s;
 }
 .home-btn:hover {
-  background: linear-gradient(90deg, #fbc2eb 0%, #a1c4fd 100%);
+  background: var(--color-accent-hover);
   transform: scale(1.05);
 }

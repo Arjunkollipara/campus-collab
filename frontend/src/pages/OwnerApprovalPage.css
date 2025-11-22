@@ -4,15 +4,17 @@
 .owner-approval-title {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #2d7ff9;
+  color: var(--color-accent);
   margin-bottom: 24px;
+  transition: color var(--transition-fast);
 }
 .owner-project-card {
   margin-bottom: 32px;
-  box-shadow: 0 8px 32px rgba(45,127,249,0.10);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
   border-radius: 16px;
-  background: #fff;
+  background: var(--color-surface);
   overflow: visible;
+  transition: background var(--transition-fast), box-shadow var(--transition-fast);
 }
 .owner-project-header {
   padding: 24px 24px 0 24px;
@@ -21,16 +23,18 @@
   background: linear-gradient(90deg, #e3f0ff 60%, #fff 100%);
 }
 .owner-project-header h3 {
-  color: #2d7ff9;
+  color: var(--color-accent);
   font-size: 1.35rem;
   font-weight: 700;
   margin-bottom: 6px;
   letter-spacing: 0.5px;
+  transition: color var(--transition-fast);
 }
 .owner-project-header div {
-  color: #444;
+  color: var(--color-text-muted);
   font-size: 1.05rem;
   margin-bottom: 8px;
+  transition: color var(--transition-fast);
 }
 .owner-project-body {
   padding: 18px 24px;
@@ -104,7 +108,7 @@
   flex-wrap: wrap;
 }
 .owner-approval-btn {
-  background: #2d7ff9;
+  background: var(--color-accent);
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -112,8 +116,9 @@
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, transform var(--transition-fast);
 }
 .owner-approval-btn:hover {
-  background: #1756b3;
+  background: var(--color-accent-hover);
+  transform: translateY(-2px);
 }

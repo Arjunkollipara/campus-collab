@@ -1,17 +1,18 @@
 body {
   margin: 0;
   font-family: 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Helvetica Neue', Arial, sans-serif;
-  background: #f6f8fa;
-  color: #222;
+  background: var(--color-bg);
+  color: var(--color-text);
 }
 
 .app-container {
   max-width: 800px;
   margin: 40px auto;
-  background: #fff;
+  background: var(--color-surface);
   border-radius: 12px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  box-shadow: var(--color-shadow);
   padding: 32px 24px;
+  transition: background var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 header {
@@ -24,7 +25,7 @@ header {
 h1 {
   font-size: 2.2rem;
   font-weight: 700;
-  color: #2d3748;
+  color: var(--color-text);
 }
 
 nav {
@@ -33,17 +34,15 @@ nav {
 
 nav a {
   text-decoration: none;
-  color: #3182ce;
+  color: var(--color-accent);
   font-weight: 500;
   margin-right: 16px;
-  transition: color 0.2s;
+  transition: color var(--transition-fast);
 }
-nav a:hover {
-  color: #2b6cb0;
-}
+nav a:hover { color: var(--color-accent-hover); }
 
 button {
-  background: #3182ce;
+  background: var(--color-accent);
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -53,18 +52,17 @@ button {
   cursor: pointer;
   margin-top: 8px;
   margin-bottom: 8px;
-  transition: background 0.2s;
+  transition: background var(--transition-fast), transform var(--transition-fast);
 }
-button:hover {
-  background: #2563eb;
-}
+button:hover { background: var(--color-accent-hover); transform: translateY(-2px); }
 
 form {
-  background: #f9fafb;
+  background: var(--color-bg-alt);
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
   margin-bottom: 24px;
+  transition: background var(--transition-fast);
 }
 
 input {
@@ -72,18 +70,22 @@ input {
   width: 100%;
   padding: 10px;
   margin-bottom: 14px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   font-size: 1rem;
-  background: #fff;
+  background: var(--color-surface);
+  color: var(--color-text);
+  transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
 }
+input:focus { outline: 2px solid var(--color-accent); }
 
 .card {
-  background: #fff;
+  background: var(--color-surface);
   border-radius: 10px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.06);
   padding: 20px 18px;
   margin-bottom: 18px;
+  transition: background var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .profile-avatar {
@@ -103,19 +105,18 @@ input {
 }
 
 .App-header {
-  background-color: #282c34;
+  background: var(--color-gradient);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: var(--color-text);
+  transition: background var(--transition-fast);
 }
 
-.App-link {
-  color: #61dafb;
-}
+.App-link { color: var(--color-accent); }
 
 @keyframes App-logo-spin {
   from {

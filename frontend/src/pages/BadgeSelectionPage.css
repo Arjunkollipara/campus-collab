@@ -1,6 +1,10 @@
 .badge-selection-container {
   padding: 32px;
   text-align: center;
+  background: var(--color-surface);
+  border-radius: 16px;
+  box-shadow: var(--color-shadow);
+  transition: background var(--transition-fast), box-shadow var(--transition-fast);
 }
 .badge-list {
   display: flex;
@@ -10,27 +14,27 @@
   margin-top: 24px;
 }
 .badge-card {
-  background: #f8fafc;
+  background: var(--color-bg-alt);
   border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(45,127,249,0.10);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
   padding: 18px 28px;
   min-width: 120px;
   display: flex;
   flex-direction: column;
   align-items: center;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s, color var(--transition-fast);
   font-size: 1.2rem;
 }
 .badge-card:hover {
   transform: translateY(-4px) scale(1.05);
-  box-shadow: 0 6px 24px rgba(45,127,249,0.18);
-  background: #e3f0ff;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.18);
+  background: var(--color-surface);
 }
 .badge-card.selected {
-  background: #2d7ff9;
+  background: var(--color-accent);
   color: #fff;
-  box-shadow: 0 6px 24px rgba(45,127,249,0.18);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.25);
 }
 .badge-icon {
   font-size: 2.2rem;
@@ -43,5 +47,6 @@
 .badge-feedback {
   margin-top: 32px;
   font-size: 1.1rem;
-  color: #6366f1;
+  color: var(--color-accent);
+  transition: color var(--transition-fast);
 }
