@@ -13,7 +13,11 @@ const userSchema = new mongoose.Schema({
     github:   { type: String, default: '' },
     linkedin: { type: String, default: '' },
     portfolio:{ type: String, default: '' },
-  }
+  },
+  // Earned badge codes (e.g., 'leader', 'innovator')
+  badges: { type: [String], default: [] },
+  // Subset of earned badges the user wants to display
+  selectedBadges: { type: [String], default: [] }
 },
 { timestamps: true }
 );

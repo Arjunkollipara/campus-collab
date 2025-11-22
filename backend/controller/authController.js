@@ -14,6 +14,8 @@ const sanitize = (u) => ({
   skills: u.skills,
   bio: u.bio,
   links: u.links,
+  badges: u.badges || [],
+  selectedBadges: u.selectedBadges || [],
   createdAt: u.createdAt,
   updatedAt: u.updatedAt,
 });
@@ -35,6 +37,12 @@ exports.signup = async (req, res) => {
       userRole = 'admin';
     }
     const user = await User.create({ name, email, password: hash, role: userRole });
+    // Award signup badge if not present
+    if (!user.badges.includes('signup')) {
+      user.badges.push('signup');
+      if (user.selectedBadges.length === 0) user.selectedBadges.push('signup');
+      await user.save();
+    }
 
     const token = signToken(user._id);
     res.status(201).json({ user: sanitize(user), token });

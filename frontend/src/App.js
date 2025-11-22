@@ -25,6 +25,10 @@ import SignupForm from "./components/auth/SignupForm";
 import LoginForm from "./components/auth/LoginForm";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
+import BadgeSelectionPage from "./pages/BadgeSelectionPage";
+import BadgeCatalogPage from "./pages/BadgeCatalogPage";
+// Badge table view removed per request
+import BadgeAdminPage from "./pages/BadgeAdminPage";
 
 function App() {
   const [me, setMe] = useState(null);
@@ -44,13 +48,17 @@ function App() {
       try {
         const u = await getMe();
         setMe(u);
+        try { localStorage.setItem('me', JSON.stringify(u)); } catch {}
       } catch (err) {
         setMe(null);
       }
     })();
   }, []);
 
-  const handleAuthed = (user) => setMe(user);
+  const handleAuthed = (user) => {
+    setMe(user);
+    try { localStorage.setItem('me', JSON.stringify(user)); } catch {}
+  };
   // Use a wrapper to access navigate
   const LogoutButton = () => {
     const navigate = useNavigate();
@@ -72,6 +80,7 @@ function App() {
     try {
       const u = await getMe();
       setMe(u);
+      try { localStorage.setItem('me', JSON.stringify(u)); } catch {}
     } catch (err) {
       setMe(null);
     }
@@ -139,12 +148,26 @@ function App() {
             <Link to="/owner-approvals">
               <button style={{ marginLeft: 10 }}>Pending Approvals</button>
             </Link>
+            <Link to="/badges">
+              <button style={{ marginLeft: 10 }}>Badges</button>
+            </Link>
+            <Link to="/badges/catalog">
+              <button style={{ marginLeft: 10 }}>Badge Catalog</button>
+            </Link>
+              {me.role === 'admin' && (
+                <Link to="/badges/admin">
+                  <button style={{ marginLeft: 10 }}>Badge Admin</button>
+                </Link>
+              )}
         </nav>
         <Routes>
           <Route path="/" element={<Navigate to="/profile" />} />
           <Route path="/profile" element={<ProfilePage me={me} onProfileUpdated={refreshMe} />} />
-          <Route path="/projects" element={<ProjectsPage me={me} />} />
+          <Route path="/projects" element={<ProjectsPage me={me} onUserRefresh={refreshMe} />} />
           <Route path="/owner-approvals" element={<OwnerApprovalPage me={me} />} />
+          <Route path="/badges" element={<BadgeSelectionPage />} />
+          <Route path="/badges/catalog" element={<BadgeCatalogPage />} />
+          <Route path="/badges/admin" element={<BadgeAdminPage me={me} />} />
         </Routes>
       </div>
     </Router>

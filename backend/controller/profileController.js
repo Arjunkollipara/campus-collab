@@ -1,4 +1,5 @@
 const Profile = require("../models/Profile") 
+const User = require('../models/User');
 
 const createOrUpdateProfile = async (req, res) => {
   try {
@@ -37,6 +38,13 @@ const createOrUpdateProfile = async (req, res) => {
       // create
       profile = new Profile({ userId, bio, avatar, details, skills: safeSkills, links: cleanLinks, achievements: safeAchievements, selectedBadges });
       await profile.save();
+      // Award profile_complete badge on first profile creation
+      const user = await User.findById(userId);
+      if (user && !user.badges.includes('profile_complete')) {
+        user.badges.push('profile_complete');
+        if (user.selectedBadges.length === 0) user.selectedBadges.push('profile_complete');
+        await user.save();
+      }
     }
 
     res.status(200).json(profile);

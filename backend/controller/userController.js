@@ -72,6 +72,8 @@ const getMe = async (req, res) => {
     skills: u.skills,
     bio: u.bio,
     links: u.links,
+    badges: u.badges || [],
+    selectedBadges: u.selectedBadges || [],
     createdAt: u.createdAt,
     updatedAt: u.updatedAt
   });

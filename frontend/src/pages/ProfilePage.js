@@ -12,17 +12,27 @@ function isProfileComplete(profile) {
 const ProfilePage = ({ me, onProfileUpdated }) => {
   const [profile, setProfile] = useState(null);
   const [editing, setEditing] = useState(false);
+  const [loadingProfile, setLoadingProfile] = useState(true);
+  const [profileError, setProfileError] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchProfile() {
+      setLoadingProfile(true);
+      setProfileError("");
       try {
         const res = await getProfileByUserId(me._id);
         setProfile(res.data);
         setEditing(!isProfileComplete(res.data));
-      } catch {
+      } catch (err) {
+        // store a readable error for the debug panel
+        const msg = err?.response?.data?.message || err?.message || 'Failed to load profile';
+        setProfileError(msg);
+        try { console.warn('Profile fetch error', err); } catch {}
         setProfile(null);
         setEditing(true);
+      } finally {
+        setLoadingProfile(false);
       }
     }
     fetchProfile();
@@ -40,31 +50,52 @@ const ProfilePage = ({ me, onProfileUpdated }) => {
 
   if (editing) {
     return (
-      <div style={{ textAlign: "center", marginTop: 40 }}>
-        <div style={{ fontSize: 48, marginBottom: 16 }}>📝</div>
-        <h2 style={{ color: "#2d3a4a" }}>Please fill in your profile details</h2>
-        <p style={{ color: "#4a5a6a", marginBottom: 24 }}>
-          To access all features, complete your profile with your bio and skills. This helps us recommend the best projects for you!
-        </p>
-        <ProfileForm me={me} profile={profile} onProfileSaved={handleProfileSaved} />
+      <div className="page-full">
+        <div className="page-inner">
+          <div style={{ textAlign: "center", marginTop: 40 }} className="stagger">
+            <div style={{ fontSize: 48, marginBottom: 16 }}>📝</div>
+            <h2 style={{ color: "#2d3a4a" }}>Please fill in your profile details</h2>
+            <p style={{ color: "#4a5a6a", marginBottom: 24 }}>
+              To access all features, complete your profile with your bio and skills. This helps us recommend the best projects for you!
+            </p>
+            <ProfileForm me={me} profile={profile} onProfileSaved={handleProfileSaved} />
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="profile-page-bg">
-      {/* Animated background shapes */}
-      <div className="profile-bg-shapes">
-        <div className="profile-bg-shape1" />
-        <div className="profile-bg-shape2" />
-        <div className="profile-bg-shape3" />
-      </div>
-      <div className="profile-card-anim">
-        {/* ProfileView and buttons go here */}
-        <ProfileView profile={profile} />
-        <div style={{ marginTop: 32 }}>
-          <button className="profile-btn-anim" onClick={() => setEditing(true)} style={{ marginRight: 12, padding: "10px 28px", borderRadius: 8, background: "#a1c4fd", color: "#2d3a4a", fontWeight: 600, border: "none", fontSize: "1rem" }}>Edit Profile</button>
-          <button className="profile-btn-anim" onClick={() => navigate("/projects")} style={{ padding: "10px 28px", borderRadius: 8, background: "#fbc2eb", color: "#2d3a4a", fontWeight: 600, border: "none", fontSize: "1rem" }}>Go to Projects</button>
+    <div className="page-full">
+      <div className="page-inner">
+        <div className="profile-page-bg hero-content">
+          {/* Animated background shapes */}
+          <div className="profile-bg-shapes page-floating-shape shape-ani">
+            <div className="profile-bg-shape1" />
+            <div className="profile-bg-shape2" />
+            <div className="profile-bg-shape3" />
+          </div>
+          <div className="profile-card-anim stagger">
+            {/* Debug / status panel - temporary, helps identify why fields are empty */}
+            <div style={{ textAlign: 'left', marginBottom: 12, padding: 12, borderRadius: 10, background: 'linear-gradient(90deg, rgba(0,0,0,0.04), rgba(255,255,255,0.02))' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <strong>Profile status</strong>
+                <small style={{ color: 'var(--color-text-muted)' }}>{loadingProfile ? 'Loading...' : (profileError ? 'Error' : 'Loaded')}</small>
+              </div>
+              {profileError && <div style={{ color: '#ff6b6b', marginTop: 8 }}>Error: {profileError}</div>}
+              <div style={{ marginTop: 8, fontSize: 12, color: 'var(--color-text-muted)' }}>
+                <div><strong>me</strong>: <code style={{ wordBreak: 'break-word' }}>{me ? me._id : 'null'}</code></div>
+                <div style={{ marginTop:6 }}><strong>profile</strong>: {loadingProfile ? '...' : (profile ? <span style={{ color: 'var(--color-accent)' }}>present</span> : <span style={{ color: 'var(--color-text-muted)' }}>missing</span>)}</div>
+              </div>
+            </div>
+
+            {/* ProfileView and buttons go here */}
+            <ProfileView profile={profile} user={me} />
+            <div style={{ marginTop: 32 }}>
+              <button className="profile-btn-anim" onClick={() => setEditing(true)} style={{ marginRight: 12, padding: "10px 28px", borderRadius: 8, background: "#a1c4fd", color: "#2d3a4a", fontWeight: 600, border: "none", fontSize: "1rem" }}>Edit Profile</button>
+              <button className="profile-btn-anim" onClick={() => navigate("/projects")} style={{ padding: "10px 28px", borderRadius: 8, background: "#fbc2eb", color: "#2d3a4a", fontWeight: 600, border: "none", fontSize: "1rem" }}>Go to Projects</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -1,24 +1,66 @@
 
-const ProfileView = ({ profile }) => {
-  if (!profile) return <p>No profile found. Please create one.</p>;
+const ProfileView = ({ profile, user }) => {
+  if (!profile) return (
+    <div style={{ padding: 24, borderRadius: 12, background: 'var(--color-surface)', boxShadow: '0 8px 30px rgba(12,18,40,0.06)', textAlign: 'center' }}>
+      <h3 style={{ marginTop: 0 }}>No profile yet</h3>
+      <p style={{ color: 'var(--color-text-muted)' }}>You haven't created a profile — click Edit Profile to add your bio and skills.</p>
+    </div>
+  );
+
+  // Build badge catalog map from localStorage (persisted by BadgeSelectionPage)
+  let catalogMap = {};
+  try {
+    const raw = localStorage.getItem('badgeCatalog');
+    if (raw) {
+      JSON.parse(raw).forEach(b => { catalogMap[b.code] = b; });
+    }
+  } catch {}
 
   return (
-    <div>
+    <div style={{ display: 'block', color: 'var(--color-text)' }}>
       {/* Hero/banner image at top */}
       <img
         src="https://cdn-icons-png.flaticon.com/512/174/174857.png"
         alt="LinkedIn Banner"
         className="profile-banner-img"
-        style={{ width: "100%", height: "120px", objectFit: "cover", borderRadius: "18px 18px 0 0", marginBottom: "-60px" }}
+        style={{ width: "100%", height: "120px", objectFit: "cover", borderRadius: "18px 18px 0 0", marginBottom: "8px" }}
       />
+      <div style={{ background: 'var(--color-surface)', padding: 20, borderRadius: 12, boxShadow: '0 12px 40px rgba(12,18,40,0.08)', position: 'relative', zIndex: 2 }}>
       {/* Profile avatar below hero image */}
-      {profile.avatar && (
+      {profile.avatar ? (
         <img src={profile.avatar} alt="avatar" className="profile-avatar-anim" />
+      ) : (
+        <div style={{ width:100, height:100, borderRadius:50, background:'linear-gradient(135deg,#f0f4ff,#fff0fb)', display:'inline-flex', alignItems:'center', justifyContent:'center', fontSize:32, marginBottom:12 }} aria-hidden>👤</div>
       )}
-      <h2>{profile.details}</h2>
-      <p><strong>Bio:</strong> {profile.bio}</p>
-      <p><strong>Skills:</strong> {profile.skills?.join(", ")}</p>
-      <p><strong>Achievements:</strong> {profile.achievements?.join(", ")}</p>
+      <h2>{profile.details || 'No headline provided'}</h2>
+      <p><strong>Bio:</strong> {profile.bio && profile.bio.trim() !== '' ? profile.bio : 'No bio yet'}</p>
+      <p><strong>Skills:</strong> {profile.skills && profile.skills.length > 0 ? profile.skills.join(', ') : 'No skills listed'}</p>
+      <p><strong>Achievements:</strong> {profile.achievements && profile.achievements.length > 0 ? profile.achievements.join(', ') : 'None yet'}</p>
+      {user && user.selectedBadges && user.selectedBadges.length > 0 && (
+        <div style={{ marginTop: 16 }}>
+          <strong>Badges:</strong>
+          <div style={{ display:'flex', gap:12, flexWrap:'wrap', marginTop:8 }}>
+            {user.selectedBadges.map(code => {
+              const badge = catalogMap[code] || {};
+              const fallbackIcon = code === 'leader' && '🏆' || code === 'innovator' && '💡' || code === 'team_player' && '🤝' || code === 'problem_solver' && '🧩' || code === 'achiever' && '🎯' || code === 'mentor' && '🧠' || code === 'early_adopter' && '🚀';
+              return (
+                <div key={code} style={{
+                  display:'flex', flexDirection:'column', alignItems:'center', padding:'8px 12px',
+                  background:'var(--color-bg-alt)', borderRadius:12, boxShadow:'0 6px 20px rgba(12,18,40,0.08)',
+                  animation:'badgeAppear 0.55s ease', transition:'transform 0.18s', transformOrigin: 'center center'
+                }} tabIndex={0} role="img" aria-label={badge.name || code}>
+                  {badge.image ? (
+                    <img src={badge.image} alt={badge.name || code} style={{ width:64, height:64, borderRadius:12, boxShadow:'0 6px 18px rgba(0,0,0,0.12)' }} />
+                  ) : (
+                    <span style={{ fontSize:'1.8rem' }}>{fallbackIcon}</span>
+                  )}
+                  <span style={{ fontSize:'0.78rem', marginTop:6, color:'var(--color-text-muted)', fontWeight:600 }}>{(badge.name || code).replace(/_/g,' ')}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
       <div className="profile-social-links">
         {profile.links?.github && (
           <a className="profile-social-link" href={profile.links.github} target="_blank" rel="noopener noreferrer" title="GitHub">
@@ -35,6 +77,12 @@ const ProfileView = ({ profile }) => {
             <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
           </a>
         )}
+      </div>
+      {/* Debug: show raw profile/user data to help troubleshoot invisible fields */}
+      <details style={{ marginTop: 14, fontSize: 12, color: 'var(--color-text-muted)' }}>
+        <summary style={{ cursor: 'pointer' }}>View raw data (debug)</summary>
+        <pre style={{ maxHeight: 300, overflow: 'auto', background: 'rgba(0,0,0,0.03)', padding: 12, borderRadius: 8 }}>{JSON.stringify({ profile, user }, null, 2)}</pre>
+      </details>
       </div>
     </div>
   );

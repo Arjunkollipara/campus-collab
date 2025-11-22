@@ -7,14 +7,22 @@ const createProject = async (req, res) => {
     const { title, description = '', requiredSkills = [] } = req.body;
     if (!title) return res.status(400).json({ message: 'title is required' });
 
-    // Use authenticated user as owner
     const ownerId = req.user._id;
     const owner = await User.findById(ownerId);
     if (!owner) return res.status(404).json({ message: 'Owner not found' });
 
+    // Count existing owned projects to determine first_project badge eligibility
+    const existingCount = await Project.countDocuments({ owner: ownerId });
+
     const project = await Project.create({
       title, description, requiredSkills, owner: ownerId, members: [ownerId],
     });
+
+    if (existingCount === 0 && !owner.badges.includes('first_project')) {
+      owner.badges.push('first_project');
+      if (owner.selectedBadges.length === 0) owner.selectedBadges.push('first_project');
+      await owner.save();
+    }
 
     res.status(201).json(project);
   } catch (err) {
