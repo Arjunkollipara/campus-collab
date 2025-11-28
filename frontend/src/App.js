@@ -37,7 +37,7 @@ function App() {
   const [me, setMe] = useState(null);
     const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
   // navigation panel open state must be declared unconditionally
-  const [navOpen, setNavOpen] = useState(true);
+  // navigation panel removed per user preference
 
     // Apply theme class to root
     useEffect(() => {
@@ -96,9 +96,6 @@ function App() {
     return (
       <Router>
         <div>
-          <div style={{ position: 'absolute', top: 10, right: 10 }}>
-            <ThemeToggle theme={theme} setTheme={setTheme} />
-          </div>
           <Routes>
             <Route path="/admin" element={
               <PrivateAdminRoute>
@@ -121,9 +118,6 @@ function App() {
     return (
       <Router>
         <div>
-          <div style={{ position: 'absolute', top: 10, right: 10 }}>
-            <ThemeToggle theme={theme} setTheme={setTheme} />
-          </div>
           <Routes>
             <Route path="/admin" element={<AdminPage />} />
             <Route path="*" element={<Navigate to="/admin" />} />
@@ -138,33 +132,28 @@ function App() {
   return (
     <Router>
       <div className="app-container">
-          <div style={{ position: 'absolute', top: 10, right: 10 }}>
-            <ThemeToggle theme={theme} setTheme={setTheme} />
+        {/* Top-fixed simple nav bar (no dropdown or animation) */}
+        <div className="top-fixed-bar" role="navigation" aria-label="Primary">
+          <div className="top-fixed-inner">
+            <div className="top-fixed-left">
+              <Link className="nav-button" to="/profile">Profile</Link>
+              <Link className="nav-button" to="/projects">Projects</Link>
+              <Link className="nav-button" to="/collab">Team Collab</Link>
+              <Link className="nav-button" to="/owner-approvals">Pending Approvals</Link>
+              <Link className="nav-button" to="/badges">Badges</Link>
+              <Link className="nav-button" to="/badges/catalog">Badge Catalog</Link>
+              {me.role === 'admin' && (
+                <Link className="nav-button" to="/badges/admin">Badge Admin</Link>
+              )}
+            </div>
+            <div className="top-fixed-right">
+              <ThemeToggle theme={theme} setTheme={setTheme} />
+              <div style={{ width: 10 }} />
+              <LogoutButton />
+            </div>
           </div>
-        <aside className={`nav-panel ${navOpen ? 'open' : 'closed'} anim-slide-left`}> 
-          <div className="nav-brand">
-            <h1 style={{ margin: 0, fontSize: '1.1rem' }}>BYD Campus</h1>
-            <button className="nav-toggle" onClick={() => setNavOpen(v => !v)} aria-label="Toggle navigation">
-              {navOpen ? '◀' : '▶'}
-            </button>
-          </div>
-          <nav className="nav-list">
-            <Link className="nav-item anim-pop" to="/profile">Profile</Link>
-            <Link className="nav-item anim-pop" to="/projects">Projects</Link>
-            <Link className="nav-item anim-pop" to="/collab">Team Collab</Link>
-            <Link className="nav-item anim-pop" to="/owner-approvals">Pending Approvals</Link>
-            <Link className="nav-item anim-pop" to="/badges">Badges</Link>
-            <Link className="nav-item anim-pop" to="/badges/catalog">Badge Catalog</Link>
-            {me.role === 'admin' && (
-              <Link className="nav-item anim-pop" to="/badges/admin">Badge Admin</Link>
-            )}
-          </nav>
-          <div className="nav-footer">
-            <div className="nav-user">{me.name} • {me.role || 'user'}</div>
-            <LogoutButton />
-          </div>
-        </aside>
-        <main className="main-view" style={{ marginLeft: navOpen ? 320 : 88, transition: 'margin-left 280ms cubic-bezier(.2,.9,.2,1)', padding: 20 }}>
+        </div>
+        <main className="main-view" style={{ marginLeft: 0, transition: 'margin-left 280ms cubic-bezier(.2,.9,.2,1)' }}>
           <Routes>
             <Route path="/" element={<Navigate to="/profile" />} />
             <Route path="/profile" element={<ProfilePage me={me} onProfileUpdated={refreshMe} />} />

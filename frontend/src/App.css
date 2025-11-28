@@ -39,33 +39,88 @@ nav {
 
 /* Animated navigation panel */
 .nav-panel {
+  /* Top-centered fixed panel that pushes content down when open */
   position: fixed;
-  left: 18px;
-  top: 20px;
-  bottom: 20px;
-  width: 260px;
-  max-width: 28%;
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  border-radius: 16px;
-  padding: 16px;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  height: var(--nav-height, 84px);
+  width: min(1100px, calc(100% - 48px));
+  background: var(--surface-gradient);
+  border-radius: 12px;
+  padding: 12px 18px;
+  box-shadow: var(--surface-shadow);
   display: flex;
-  flex-direction: column;
-  gap: 12px;
-  z-index: 40;
-  transform-origin: left center;
-  transition: transform 280ms cubic-bezier(.2,.9,.2,1), opacity 220ms ease, width 240ms ease;
+  align-items: center;
+  gap: 16px;
+  z-index: 80;
+  transform-origin: top center;
+  transition: transform 320ms cubic-bezier(.2,.9,.2,1), opacity 220ms ease;
 }
-.nav-panel.closed { transform: translateX(-96%); opacity: 0.06; width: 64px; }
-.nav-panel.open { transform: translateX(0); opacity: 1; }
+.nav-panel.closed { transform: translate(-50%, -140%); opacity: 0; height: 0; padding: 0 18px; }
+.nav-panel.open { transform: translate(-50%, 0); opacity: 1; }
 .nav-brand { display:flex; align-items:center; justify-content:space-between; gap:12px; }
 .nav-toggle { background: transparent; border: none; color: var(--color-text); cursor: pointer; font-size: 0.95rem; padding: 6px 8px; border-radius: 8px; }
-.nav-list { display:flex; flex-direction:column; gap:8px; margin-top: 6px; }
-.nav-item { display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--color-text); padding:10px 12px; border-radius:10px; transition: background 180ms ease, transform 140ms ease; }
-.nav-item:hover { background: linear-gradient(90deg, rgba(59,130,246,0.06), rgba(236,72,153,0.04)); transform: translateX(6px); }
+.nav-list { display:flex; flex: 1; align-items:center; gap:12px; justify-content:flex-start; }
+.nav-item { display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--color-text); padding:8px 12px; border-radius:10px; transition: background 180ms ease, transform 140ms ease; }
+.nav-item:hover { background: linear-gradient(90deg, rgba(59,130,246,0.06), rgba(236,72,153,0.04)); transform: translateY(-3px); }
 .nav-item.active { background: linear-gradient(90deg, var(--color-accent), var(--color-accent-hover)); color: #fff; box-shadow: 0 8px 28px rgba(59,130,246,0.12); }
-.nav-footer { margin-top: auto; display:flex; align-items:center; justify-content:space-between; gap:8px; }
-.nav-user { font-size:0.9rem; color:var(--color-text-muted); }
+.nav-footer { margin-left: auto; display:flex; align-items:center; justify-content:flex-end; gap:8px; }
+.nav-user { font-size:0.9rem; color:var(--color-text-muted); margin-right: 8px; }
+
+/* Fixed top button (simple, non-animated navigation trigger) */
+.fixed-top-button {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 220;
+  background: var(--surface-gradient);
+  color: var(--color-text);
+  border: 0;
+  padding: 8px 12px;
+  border-radius: 10px;
+  box-shadow: var(--surface-shadow);
+  cursor: pointer;
+  font-weight: 600;
+}
+.fixed-top-button:hover { transform: translateY(-2px); }
+
+/* Top fixed bar with simple nav buttons */
+.top-fixed-bar {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(1100px, calc(100% - 48px));
+  z-index: 210;
+  pointer-events: auto;
+}
+.top-fixed-inner {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface-gradient);
+  padding: 8px 12px;
+  border-radius: 12px;
+  box-shadow: var(--surface-shadow);
+}
+.top-fixed-left .nav-button,
+.top-fixed-inner .nav-button {
+  color: var(--color-text);
+  background: transparent;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+}
+.top-fixed-inner .nav-button:hover { background: rgba(255,255,255,0.02); transform: translateY(-2px); }
+
+.top-fixed-right { display:flex; align-items:center; gap:8px; }
+
+/* Ensure main content is not hidden under the top bar on small screens */
+.main-view { padding-top: 84px; }
 
 /* Animation utilities (reusable) */
 .anim-pop { animation: popIn 420ms cubic-bezier(.2,.85,.3,1) both; }
@@ -78,6 +133,16 @@ nav {
 /* Respect reduced-motion for nav animations */
 @media (prefers-reduced-motion: reduce) {
   .nav-panel, .nav-item, .anim-pop, .anim-fade-scale, .anim-slide-left { transition: none !important; animation: none !important; transform: none !important; }
+}
+
+/* overlay used when nav is open (nav floats above content) */
+.content-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(6,10,18,0.28);
+  backdrop-filter: blur(2px);
+  z-index: 64; /* below nav (80) but above main content */
+  opacity: 1;
 }
 
 nav a {
