@@ -11,6 +11,11 @@
   --color-shadow: 0 4px 24px rgba(0,0,0,0.08);
   --color-gradient: linear-gradient(120deg,#e0eafc 0%,#cfdef3 100%);
   --transition-fast: 0.25s ease;
+  /* Animation / decorative shape colors (light theme) */
+  --anim-shape-1: rgba(49,130,206,0.18); /* blue */
+  --anim-shape-2: rgba(251,194,235,0.16); /* pink */
+  --anim-shape-3: rgba(255,235,166,0.12); /* warm accent */
+  --anim-shape-blend: screen;
 }
 
 /* Small utilities for cinematic UI */
@@ -28,6 +33,11 @@
   --color-surface: #1f2b36;
   --color-shadow: 0 4px 24px rgba(0,0,0,0.6);
   --color-gradient: linear-gradient(135deg,#1e2933 0%,#0f1419 100%);
+  /* Animation / decorative shape colors (dark theme) */
+  --anim-shape-1: rgba(59,130,246,0.24); /* brighter blue */
+  --anim-shape-2: rgba(236,72,153,0.18); /* magenta */
+  --anim-shape-3: rgba(168,85,247,0.12); /* purple accent */
+  --anim-shape-blend: screen;
 }
 
 body {
