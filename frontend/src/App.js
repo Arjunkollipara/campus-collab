@@ -10,6 +10,8 @@ function PrivateAdminRoute({ children }) {
 import OwnerApprovalPage from "./pages/OwnerApprovalPage";
 import ProfilePage from "./pages/ProfilePage";
 import ProjectsPage from "./pages/ProjectsPage";
+import ProjectRoom from "./pages/ProjectRoom";
+import TeamCollab from "./pages/TeamCollab";
 import React, { useEffect, useState } from "react";
 import ThemeToggle from "./components/ThemeToggle";
 import { BrowserRouter as Router, Routes, Route, Navigate, Link, useNavigate } from "react-router-dom";
@@ -154,6 +156,9 @@ function App() {
             <Link to="/badges/catalog">
               <button style={{ marginLeft: 10 }}>Badge Catalog</button>
             </Link>
+            <Link to="/collab">
+              <button style={{ marginLeft: 10 }}>Team Collab</button>
+            </Link>
               {me.role === 'admin' && (
                 <Link to="/badges/admin">
                   <button style={{ marginLeft: 10 }}>Badge Admin</button>
@@ -164,6 +169,8 @@ function App() {
           <Route path="/" element={<Navigate to="/profile" />} />
           <Route path="/profile" element={<ProfilePage me={me} onProfileUpdated={refreshMe} />} />
           <Route path="/projects" element={<ProjectsPage me={me} onUserRefresh={refreshMe} />} />
+          <Route path="/projects/:id" element={<ProjectRoom me={me} />} />
+          <Route path="/collab" element={<TeamCollab me={me} />} />
           <Route path="/owner-approvals" element={<OwnerApprovalPage me={me} />} />
           <Route path="/badges" element={<BadgeSelectionPage />} />
           <Route path="/badges/catalog" element={<BadgeCatalogPage />} />

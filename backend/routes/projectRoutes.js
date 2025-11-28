@@ -6,6 +6,7 @@ const {
 } = require('../controller/projectController');
 
 const requireAuth = require('../middleware/requireAuth');
+const { getMessages, postMessage } = require('../controller/chatController');
 
 
 router.delete('/:id', requireAuth, deleteProject);
@@ -18,5 +19,8 @@ router.post('/:id/join', requireAuth, joinProject);
 router.put('/:id/toggle', requireAuth, toggleOpen);
 router.put('/:id/approve', requireAuth, approveMember);
 router.put('/:id/remove', requireAuth, removeMember);
+// Chat message history (REST)
+router.get('/:id/messages', getMessages);
+router.post('/:id/messages', requireAuth, postMessage);
 
 module.exports = router;

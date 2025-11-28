@@ -59,7 +59,75 @@ app.get('/__routes', (req, res) => {
   res.json(stack);
 });
 
-// Server listen
+// Server listen with Socket.io integration
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require('socket.io');
+const jwt = require('jsonwebtoken');
+const User = require('./models/User');
+const Message = require('./models/Message');
+
+const io = new Server(server, {
+  cors: {
+    origin: '*',
+  },
+});
+
+// Socket auth middleware (validate JWT and attach user)
+io.use(async (socket, next) => {
+  try {
+    const token = socket.handshake.auth?.token || socket.handshake.query?.token;
+    if (!token) return next(new Error('Unauthorized'));
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(payload.userId);
+    if (!user) return next(new Error('Unauthorized'));
+    socket.user = user; // attach minimal user in socket
+    next();
+  } catch (err) {
+    console.error('Socket auth error', err.message);
+    next(new Error('Unauthorized'));
+  }
+});
+
+io.on('connection', (socket) => {
+  console.log('Socket connected:', socket.id, 'user:', socket.user?._id);
+
+  socket.on('join', ({ projectId }) => {
+    if (!projectId) return;
+    const room = `project_${projectId}`;
+    socket.join(room);
+    console.log(`Socket ${socket.id} joined ${room}`);
+  });
+
+  socket.on('leave', ({ projectId }) => {
+    if (!projectId) return;
+    const room = `project_${projectId}`;
+    socket.leave(room);
+    console.log(`Socket ${socket.id} left ${room}`);
+  });
+
+  socket.on('chat:message', async (payload) => {
+    try {
+      const { projectId, text } = payload || {};
+      if (!projectId || !text) return;
+      // persist message
+      const m = new Message({ projectId, sender: socket.user._id, text });
+      const saved = await m.save();
+      const populated = await saved.populate('sender', 'name email');
+      const room = `project_${projectId}`;
+      io.to(room).emit('chat:message', populated);
+    } catch (err) {
+      console.error('chat:message handler error:', err.message);
+      socket.emit('error', { message: 'Message failed' });
+    }
+  });
+
+  socket.on('disconnect', () => {
+    // handle disconnects if needed
+    console.log('Socket disconnected:', socket.id);
+  });
+});
+
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on: http://localhost:${PORT}`));
+server.listen(PORT, () => console.log(`🚀 Server running on: http://localhost:${PORT}`));
 

@@ -70,6 +70,9 @@ const ProjectList = ({ currentUserId, searchTitle = "", searchOwner = "", search
                 <strong>{p.title}</strong> — {p.description || 'No description'}
                 <div>Skills: {p.requiredSkills?.join(', ') || '—'}</div>
                 <div>Owner: {p.owner?.name} | Members: {p.members?.length || 0} | Status: {p.isOpen ? 'Open' : 'Closed'}</div>
+                  <div style={{ marginTop: 8 }}>
+                    <button onClick={() => navigate(`/projects/${p._id}`)} style={{ padding: '6px 10px', borderRadius: 6, marginRight: 8 }}>Open Room</button>
+                  </div>
                 {/* ...existing code... */}
                 {/* Pending members list for owner, etc. */}
                 {/* ...existing code... */}
