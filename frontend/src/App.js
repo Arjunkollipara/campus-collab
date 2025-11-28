@@ -1,12 +1,4 @@
-// PrivateRoute for admin
-import AdminPage from "./pages/AdminPage";
-
-function PrivateAdminRoute({ children }) {
-  const token = localStorage.getItem("token");
-  // You may want to check for role in a more robust way (e.g., context or API)
-  const isAdmin = token && JSON.parse(atob(token.split('.')[1])).role === "admin";
-  return isAdmin ? children : <Navigate to="/admin-login" />;
-}
+// PrivateRoute for admin (declared after imports)
 import OwnerApprovalPage from "./pages/OwnerApprovalPage";
 import ProfilePage from "./pages/ProfilePage";
 import ProjectsPage from "./pages/ProjectsPage";
@@ -32,9 +24,20 @@ import BadgeCatalogPage from "./pages/BadgeCatalogPage";
 // Badge table view removed per request
 import BadgeAdminPage from "./pages/BadgeAdminPage";
 
+import AdminPage from "./pages/AdminPage";
+
+function PrivateAdminRoute({ children }) {
+  const token = localStorage.getItem("token");
+  // You may want to check for role in a more robust way (e.g., context or API)
+  const isAdmin = token && JSON.parse(atob(token.split('.')[1])).role === "admin";
+  return isAdmin ? children : <Navigate to="/admin-login" />;
+}
+
 function App() {
   const [me, setMe] = useState(null);
     const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
+  // navigation panel open state must be declared unconditionally
+  const [navOpen, setNavOpen] = useState(true);
 
     // Apply theme class to root
     useEffect(() => {
@@ -131,51 +134,49 @@ function App() {
   }
 
   // Regular user view
+
   return (
     <Router>
       <div className="app-container">
           <div style={{ position: 'absolute', top: 10, right: 10 }}>
             <ThemeToggle theme={theme} setTheme={setTheme} />
           </div>
-        <p>
-          Logged in as: {me.name} ({me.email}){" "}
-          <span style={{ marginLeft: 10, fontWeight: "bold" }}>Role: {me.role || "user"}</span>
-          <LogoutButton />
-        </p>
-        <nav>
-          <Link to="/profile">Profile</Link>
-          <Link to="/projects">
-            <button style={{ marginLeft: 10 }}>See Available Projects</button>
-          </Link>
-            <Link to="/owner-approvals">
-              <button style={{ marginLeft: 10 }}>Pending Approvals</button>
-            </Link>
-            <Link to="/badges">
-              <button style={{ marginLeft: 10 }}>Badges</button>
-            </Link>
-            <Link to="/badges/catalog">
-              <button style={{ marginLeft: 10 }}>Badge Catalog</button>
-            </Link>
-            <Link to="/collab">
-              <button style={{ marginLeft: 10 }}>Team Collab</button>
-            </Link>
-              {me.role === 'admin' && (
-                <Link to="/badges/admin">
-                  <button style={{ marginLeft: 10 }}>Badge Admin</button>
-                </Link>
-              )}
-        </nav>
-        <Routes>
-          <Route path="/" element={<Navigate to="/profile" />} />
-          <Route path="/profile" element={<ProfilePage me={me} onProfileUpdated={refreshMe} />} />
-          <Route path="/projects" element={<ProjectsPage me={me} onUserRefresh={refreshMe} />} />
-          <Route path="/projects/:id" element={<ProjectRoom me={me} />} />
-          <Route path="/collab" element={<TeamCollab me={me} />} />
-          <Route path="/owner-approvals" element={<OwnerApprovalPage me={me} />} />
-          <Route path="/badges" element={<BadgeSelectionPage />} />
-          <Route path="/badges/catalog" element={<BadgeCatalogPage />} />
-          <Route path="/badges/admin" element={<BadgeAdminPage me={me} />} />
-        </Routes>
+        <aside className={`nav-panel ${navOpen ? 'open' : 'closed'} anim-slide-left`}> 
+          <div className="nav-brand">
+            <h1 style={{ margin: 0, fontSize: '1.1rem' }}>BYD Campus</h1>
+            <button className="nav-toggle" onClick={() => setNavOpen(v => !v)} aria-label="Toggle navigation">
+              {navOpen ? '◀' : '▶'}
+            </button>
+          </div>
+          <nav className="nav-list">
+            <Link className="nav-item anim-pop" to="/profile">Profile</Link>
+            <Link className="nav-item anim-pop" to="/projects">Projects</Link>
+            <Link className="nav-item anim-pop" to="/collab">Team Collab</Link>
+            <Link className="nav-item anim-pop" to="/owner-approvals">Pending Approvals</Link>
+            <Link className="nav-item anim-pop" to="/badges">Badges</Link>
+            <Link className="nav-item anim-pop" to="/badges/catalog">Badge Catalog</Link>
+            {me.role === 'admin' && (
+              <Link className="nav-item anim-pop" to="/badges/admin">Badge Admin</Link>
+            )}
+          </nav>
+          <div className="nav-footer">
+            <div className="nav-user">{me.name} • {me.role || 'user'}</div>
+            <LogoutButton />
+          </div>
+        </aside>
+        <main className="main-view" style={{ marginLeft: navOpen ? 320 : 88, transition: 'margin-left 280ms cubic-bezier(.2,.9,.2,1)', padding: 20 }}>
+          <Routes>
+            <Route path="/" element={<Navigate to="/profile" />} />
+            <Route path="/profile" element={<ProfilePage me={me} onProfileUpdated={refreshMe} />} />
+            <Route path="/projects" element={<ProjectsPage me={me} onUserRefresh={refreshMe} />} />
+            <Route path="/projects/:id" element={<ProjectRoom me={me} />} />
+            <Route path="/collab" element={<TeamCollab me={me} />} />
+            <Route path="/owner-approvals" element={<OwnerApprovalPage me={me} />} />
+            <Route path="/badges" element={<BadgeSelectionPage />} />
+            <Route path="/badges/catalog" element={<BadgeCatalogPage />} />
+            <Route path="/badges/admin" element={<BadgeAdminPage me={me} />} />
+          </Routes>
+        </main>
       </div>
     </Router>
   );

@@ -75,7 +75,7 @@ const ProfilePage = ({ me, onProfileUpdated }) => {
             <div className="profile-bg-shape2" />
             <div className="profile-bg-shape3" />
           </div>
-          <div className="profile-card-anim stagger">
+          <div className="profile-card-anim stagger anim-fade-scale">
             <div className="profile-card-left">
               {/* Debug / status panel - temporary, helps identify why fields are empty */}
               <div style={{ textAlign: 'left', width: '100%', padding: 12, borderRadius: 10, background: 'linear-gradient(90deg, rgba(0,0,0,0.04), rgba(255,255,255,0.02))' }}>
