@@ -42,7 +42,7 @@ const ProfileView = ({ profile, user }) => {
           <div style={{ display:'flex', gap:12, flexWrap:'wrap', marginTop:8 }}>
             {user.selectedBadges.map(code => {
               const badge = catalogMap[code] || {};
-              const fallbackIcon = code === 'leader' && '🏆' || code === 'innovator' && '💡' || code === 'team_player' && '🤝' || code === 'problem_solver' && '🧩' || code === 'achiever' && '🎯' || code === 'mentor' && '🧠' || code === 'early_adopter' && '🚀';
+              //const fallbackIcon = code === 'leader' && '🏆' || code === 'innovator' && '💡' || code === 'team_player' && '🤝' || code === 'problem_solver' && '🧩' || code === 'achiever' && '🎯' || code === 'mentor' && '🧠' || code === 'early_adopter' && '🚀';
               return (
                 <div key={code} style={{
                   display:'flex', flexDirection:'column', alignItems:'center', padding:'8px 12px',

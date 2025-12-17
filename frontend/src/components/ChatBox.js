@@ -65,7 +65,7 @@ const ChatBox = ({ projectId, me }) => {
     <div className="chat-box" style={{ border: '1px solid rgba(0,0,0,0.06)', borderRadius: 8, padding: 12, maxWidth: 600 }}>
       <div className="chat-messages" style={{ maxHeight: 280, overflowY: 'auto', marginBottom: 8 }}>
         {messages.map((m) => (
-          <div key={m._id || `${m.sender?._id}-${m.createdAt}`} style={{ padding: '6px 8px', marginBottom: 6, background: m.sender?._id === me?._id ? 'linear-gradient(90deg,#a8edea,#fed6e3)' : '#fff', borderRadius: 6 }}>
+          <div key={m._id || `${m.sender?._id}-${m.createdAt}`} style={{ padding: '6px 8px', marginBottom: 6, background: m.sender?._id === me?._id ? 'linear-gradient(90deg,#a8edea,#fed6e3)' : '#000000ff', borderRadius: 6 }}>
             <div style={{ fontSize: 12, color: '#333', fontWeight: 600 }}>{m.sender?.name || m.sender?.email || 'User'}</div>
             <div style={{ fontSize: 14 }}>{m.text}</div>
             <div style={{ fontSize: 11, color: '#666' }}>{new Date(m.createdAt).toLocaleString()}</div>
@@ -75,7 +75,7 @@ const ChatBox = ({ projectId, me }) => {
       </div>
 
       <form onSubmit={handleSend} style={{ display: 'flex', gap: 8 }}>
-        <input aria-label="Message" value={text} onChange={e => setText(e.target.value)} placeholder="Write a message..." style={{ flex: 1, padding: '8px 10px', borderRadius: 6, border: '1px solid #ddd' }} />
+        <input aria-label="Message" value={text} onChange={e => setText(e.target.value)} placeholder="Write a message..." style={{ flex: 1, padding: '8px 10px', borderRadius: 6, border: '1px solid #ffffffff' }} />
         <button type="submit" style={{ padding: '8px 12px', borderRadius: 6, background: '#2d9cdb', color: '#fff', border: 'none' }}>Send</button>
       </form>
     </div>
